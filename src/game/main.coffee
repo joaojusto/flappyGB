@@ -8,5 +8,6 @@ window.onload = ->
   # Game States
   game.state.add 'preloader', require './states/preloader'
   game.state.add 'menu', require './states/menu'
+  game.state.add 'play', require './states/play'
 
   game.state.start 'preloader'

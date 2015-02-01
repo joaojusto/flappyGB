@@ -28,7 +28,7 @@
     "gulp-changed": "~0.3.0",
     "gulp-compass": "~1.1.8",
     "gulp-imagemin": "~0.1.5",
-    "gulp-notify": "~1.2.4",
+    "gulp-notify": "~2.2.0",
     "gulp-open": "~0.2.8",
     "gulp": "~3.8.0",
     "vinyl-source-stream": "~0.1.1",

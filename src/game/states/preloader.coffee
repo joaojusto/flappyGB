@@ -1,15 +1,21 @@
 class Preloader
+  'use strict'
 
   @asset = null
   @ready = false
 
   preload: ->
-    @asset = @add.sprite(320, 240, 'preloader')
-    @asset.anchor.setTo 0.5, 0.5
     @load.onLoadComplete.addOnce @onLoadComplete, this
+    @asset = @add.sprite @width/2, @height/2, 'preloader'
+    @asset.anchor.setTo 0.5, 0.5
     @load.setPreloadSprite @asset
-    @load.image 'player', 'assets/images/player.png'
-    @load.bitmapFont 'minecraftia', 'assets/fonts/minecraftia.png', 'assets/fonts/minecraftia.xml'
+
+    @load.image 'background', 'assets/images/background.png'
+    @load.image 'ground', 'assets/images/ground.png'
+    @load.image 'title', 'assets/images/title.png'
+    @load.image 'startButton', 'assets/images/start-button.png'
+
+    this.load.spritesheet('bird', 'assets/images/bird.png', 34, 24, 3)
 
   create: ->
     @asset.cropEnabled = false

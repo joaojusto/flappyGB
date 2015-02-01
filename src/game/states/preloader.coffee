@@ -17,9 +17,16 @@ class Preloader
     @load.image 'instructions', 'assets/images/instructions.png'
     @load.image 'getReady', 'assets/images/get-ready.png'
 
+    @load.audio 'flap', 'assets/audio/flap.wav'
+    @load.audio 'score', 'assets/audio/score.wav'
+    @load.audio 'pipeHit', 'assets/audio/pipe-hit.wav'
+    @load.audio 'groundHit', 'assets/audio/ground-hit.wav'
+
     @load.spritesheet 'bird', 'assets/images/bird.png', 34, 24, 3
 
     @load.spritesheet 'pipe', 'assets/images/pipes.png', 54,320,2
+
+    @load.bitmapFont 'flappyfont', 'assets/fonts/flappyfont.png', 'assets/fonts/flappyfont.fnt'
 
   create: ->
     @asset.cropEnabled = false

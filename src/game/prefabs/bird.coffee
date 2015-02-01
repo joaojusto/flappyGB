@@ -7,6 +7,8 @@ Bird = (game, x, y, frame) ->
   @animations.add 'flap'
   @animations.play 'flap', 12, true
 
+  @flapSound = @game.add.audio 'flap'
+
   @alive = false
 
   @game.physics.arcade.enableBody @
@@ -21,6 +23,7 @@ Bird::update = ->
     @angle += 2.5
 
 Bird::flap = ->
+  @flapSound.play()
   @body.velocity.y = -400
   @game.add.tween(@).to({ angle: -40 }, 100).start()
 

@@ -4,6 +4,7 @@ class Play
   Bird = require '../prefabs/bird'
   Ground = require '../prefabs/ground.coffee'
   PipeGroup = require '../prefabs/pipeGroup.coffee'
+  Scoreboard = require '../prefabs/scoreboard.coffee'
 
   create:  ->
     @game.physics.startSystem(Phaser.Physics.ARCADE)
@@ -40,6 +41,8 @@ class Play
     @scoreText = @game.add.bitmapText @game.width/2, 10, 'flappyfont', @score.toString(), 24
     @scoreText.visible = true
 
+    @scoreSound = @game.add.audio 'score'
+
   startGame: ->
     @bird.body.allowGravity = true
     @bird.alive = true
@@ -62,6 +65,7 @@ class Play
       pipeGroup.hasScored = true
       @score++
       @scoreText.setText @score.toString()
+      @scoreSound.play()
 
   generatePipes: ->
     pipeY = @game.rnd.integerInRange -100, 100
@@ -72,11 +76,18 @@ class Play
     pipeGroup.reset @game.width + pipeGroup.width / 2, pipeY
 
   deathHandler: ->
-    @game.state.start 'menu'
+    @bird.alive = false
+    @pipes.callAll 'stop'
+    @pipeGenerator.timer.stop()
+    @ground.stopScroll()
+    @scoreboard = new Scoreboard @game
+    @game.add.existing @scoreboard
+    @scoreboard.show @score
 
   shutdown: ->
     @bird.destroy()
     @pipes.destroy()
+    @scoreboard.destroy()
     @game.input.keyboard.removeKey(Phaser.Keyboard.SPACEBAR)
 
 module.exports = Play

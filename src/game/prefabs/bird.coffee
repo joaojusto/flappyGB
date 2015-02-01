@@ -7,14 +7,17 @@ Bird = (game, x, y, frame) ->
   @animations.add 'flap'
   @animations.play 'flap', 12, true
 
+  @alive = false
+
   @game.physics.arcade.enableBody @
+  @body.allowGravity = false
 
 Bird.prototype = Object.create(Phaser.Sprite.prototype)
 
 Bird::constructor = Bird
 
 Bird::update = ->
-  if @angle < 90
+  if @angle < 90 && @alive
     @angle += 2.5
 
 Bird::flap = ->

@@ -22,12 +22,11 @@ class Play
     @game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR])
 
     flapKey = @input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+    flapKey.onDown.addOnce @startGame, @
     flapKey.onDown.add @bird.flap, @bird
 
-    @input.onDown.add @bird.flap, @bird
-
-    @pipeGenerator = @game.time.events.loop(Phaser.Timer.SECOND * 1.25, @generatePipes, @)
-    @pipeGenerator.timer.start()
+    @game.input.onDown.addOnce @startGame, @
+    @game.input.onDown.add @bird.flap, @bird
 
     @instructionGroup = @game.add.group()
     @instructionGroup.add(@game.add.sprite(@game.width/2, 100, 'getReady'))
@@ -36,12 +35,33 @@ class Play
     @instructionGroup.setAll 'anchor.x', 0.5
     @instructionGroup.setAll 'anchor.y', 0.5
 
+    @score = 0
+
+    @scoreText = @game.add.bitmapText @game.width/2, 10, 'flappyfont', @score.toString(), 24
+    @scoreText.visible = true
+
+  startGame: ->
+    @bird.body.allowGravity = true
+    @bird.alive = true
+
+    @pipeGenerator = @game.time.events.loop(Phaser.Timer.SECOND * 1.25, @generatePipes, @)
+    @pipeGenerator.timer.start()
+
+    @instructionGroup.destroy()
+
   update: ->
     @game.physics.arcade.collide @bird, @ground, @deathHandler, null, @
 
     @pipes.forEach (pipeGroup) ->
+      @checkScore pipeGroup
       @game.physics.arcade.collide @bird, pipeGroup, @deathHandler, null, this
     , this
+
+  checkScore: (pipeGroup) ->
+    if pipeGroup.exists && !pipeGroup.hasScored && pipeGroup.topPipe.world.x <= @bird.world.x
+      pipeGroup.hasScored = true
+      @score++
+      @scoreText.setText @score.toString()
 
   generatePipes: ->
     pipeY = @game.rnd.integerInRange -100, 100

@@ -57,8 +57,8 @@ class Play
 
     @pipes.forEach (pipeGroup) ->
       @checkScore pipeGroup
-      @game.physics.arcade.collide @bird, pipeGroup, @deathHandler, null, this
-    , this
+      @game.physics.arcade.collide @bird, pipeGroup, @deathHandler, null, @
+    , @
 
   checkScore: (pipeGroup) ->
     if pipeGroup.exists && !pipeGroup.hasScored && pipeGroup.topPipe.world.x <= @bird.world.x
@@ -76,13 +76,15 @@ class Play
     pipeGroup.reset @game.width + pipeGroup.width / 2, pipeY
 
   deathHandler: ->
-    @bird.alive = false
-    @pipes.callAll 'stop'
-    @pipeGenerator.timer.stop()
-    @ground.stopScroll()
-    @scoreboard = new Scoreboard @game
-    @game.add.existing @scoreboard
-    @scoreboard.show @score
+    if @bird.alive
+      @bird.hitSound.play()
+      @bird.alive = false
+      @pipes.callAll 'stop'
+      @pipeGenerator.timer.stop()
+      @ground.stopScroll()
+      @scoreboard = new Scoreboard @game
+      @game.add.existing @scoreboard
+      @scoreboard.show @score
 
   shutdown: ->
     @bird.destroy()

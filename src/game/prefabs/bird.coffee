@@ -1,32 +1,29 @@
-'use strict'
+class Bird extends Phaser.Sprite
+  'use strict'
 
-Bird = (game, x, y, frame) ->
-  Phaser.Sprite.call @, game, x, y, 'bird', frame
-  @anchor.setTo 0.5, 0.5
+  contructor: (game, x, y, frame) ->
+    Phaser.Sprite.call @, game, x, y, 'bird', frame
+    @anchor.setTo 0.5, 0.5
 
-  @animations.add 'flap'
-  @animations.play 'flap', 12, true
+    @animations.add 'flap'
+    @animations.play 'flap', 12, true
 
-  @hitSound = @game.add.audio 'groundHit'
-  @flapSound = @game.add.audio 'flap'
+    @hitSound = @game.add.audio 'groundHit'
+    @flapSound = @game.add.audio 'flap'
 
-  @alive = false
+    @alive = false
 
-  @game.physics.arcade.enableBody @
-  @body.allowGravity = false
+    @game.physics.arcade.enableBody @
+    @body.allowGravity = false
 
-Bird.prototype = Object.create(Phaser.Sprite.prototype)
+  update: ->
+    if @angle < 90 && @alive
+      @angle += 2.5
 
-Bird::constructor = Bird
-
-Bird::update = ->
-  if @angle < 90 && @alive
-    @angle += 2.5
-
-Bird::flap = ->
-  if @alive
-    @flapSound.play()
-    @body.velocity.y = -400
-    @game.add.tween(@).to({ angle: -40 }, 100).start()
+  flap: ->
+    if @alive
+      @flapSound.play()
+      @body.velocity.y = -400
+      @game.add.tween(@).to({ angle: -40 }, 100).start()
 
 module.exports = Bird

@@ -44,6 +44,7 @@ class Play
     @scoreSound = @game.add.audio 'score'
 
   startGame: ->
+    console.log(Bird)
     @bird.body.allowGravity = true
     @bird.alive = true
 

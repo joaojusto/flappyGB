@@ -1,40 +1,35 @@
-'use strict'
+class PipeGroup extends Phaser.Group
+  'use strict'
 
-Pipe = require './pipe'
+  constructor: (game, parent) ->
+    Phaser.Group.call @, game, parent
+    @topPipe = new Pipe @game, 0, 0, 0
+    @add @topPipe
 
-PipeGroup = (game, parent) ->
-  Phaser.Group.call @, game, parent
-  @topPipe = new Pipe @game, 0, 0, 0
-  @add @topPipe
+    @bottomPipe = new Pipe @game, 0, 440, 1
+    @add @bottomPipe
 
-  @bottomPipe = new Pipe @game, 0, 440, 1
-  @add @bottomPipe
+    @hasScored = false
 
-  @hasScored = false
+    @setAll 'body.velocity.x', -200
 
-  @setAll 'body.velocity.x', -200
+  update: ->
+    @checkWorldBounds()
 
-PipeGroup.prototype = Object.create(Phaser.Group.prototype)
+  reset: (x, y) ->
+    @topPipe.reset 0, 0
+    @bottomPipe.reset 0, 440
 
-PipeGroup::constructor = PipeGroup
+    @x = x
+    @y = y
 
-PipeGroup::update = ->
-  @checkWorldBounds()
+    @setAll 'body.velocity.x', -200
 
-PipeGroup::reset = (x, y) ->
-  @topPipe.reset 0, 0
-  @bottomPipe.reset 0, 440
+    @hasScored = false
+    @exists = true
 
-  @x = x
-  @y = y
-
-  @setAll 'body.velocity.x', -200
-
-  @hasScored = false
-  @exists = true
-
-PipeGroup::checkWorldBounds = ->
-  unless @topPipe.inWorld
-    @exists = false
+  checkWorldBounds: ->
+    unless @topPipe.inWorld
+      @exists = false
 
 module.exports = PipeGroup

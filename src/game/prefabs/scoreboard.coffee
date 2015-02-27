@@ -1,69 +1,66 @@
-'use strict'
+class Scoreboard extends Phaser.Group
+  'use strict'
 
-Scoreboard = (game) ->
-  Phaser.Group.call this, game
+  constructor: (game) ->
+    Phaser.Group.call this, game
 
-  gameover = @create(@game.width / 2, 100, 'gameover')
-  gameover.anchor.setTo 0.5, 0.5
+    gameover = @create(@game.width / 2, 100, 'gameover')
+    gameover.anchor.setTo 0.5, 0.5
 
-  @scoreboard = @create(@game.width / 2, 200, 'scoreboard')
-  @scoreboard.anchor.setTo 0.5, 0.5
+    @scoreboard = @create(@game.width / 2, 200, 'scoreboard')
+    @scoreboard.anchor.setTo 0.5, 0.5
 
-  @scoreText = @game.add.bitmapText(@scoreboard.width, 180, 'flappyfont', '', 18)
-  @add @scoreText
+    @scoreText = @game.add.bitmapText(@scoreboard.width, 180, 'flappyfont', '', 18)
+    @add @scoreText
 
-  @bestScoreText = @game.add.bitmapText(@scoreboard.width, 230, 'flappyfont', '', 18)
-  @add @bestScoreText
+    @bestScoreText = @game.add.bitmapText(@scoreboard.width, 230, 'flappyfont', '', 18)
+    @add @bestScoreText
 
-  @startButton = @game.add.button(@game.width / 2, 300, 'startButton', @startClick, this)
-  @startButton.anchor.setTo 0.5, 0.5
-  @add @startButton
+    @startButton = @game.add.button(@game.width / 2, 300, 'startButton', @startClick, this)
+    @startButton.anchor.setTo 0.5, 0.5
+    @add @startButton
 
-  @y = @game.height
-  @x = 0
+    @y = @game.height
+    @x = 0
 
-Scoreboard.prototype = Object.create(Phaser.Group.prototype)
+  show: (score) ->
+    @scoreText.setText score.toString()
+    if !!localStorage
+      bestScore = localStorage.getItem('bestScore')
 
-Scoreboard::constructor = Scoreboard
+      if !bestScore or bestScore < score
+        bestScore = score
+        localStorage.setItem 'bestScore', bestScore
+    else
+      bestScore = 'N/A'
 
-Scoreboard::show = (score) ->
-  @scoreText.setText score.toString()
-  if !!localStorage
-    bestScore = localStorage.getItem('bestScore')
+    @bestScoreText.setText bestScore.toString()
 
-    if !bestScore or bestScore < score
-      bestScore = score
-      localStorage.setItem 'bestScore', bestScore
-  else
-    bestScore = 'N/A'
+    if score >= 10 and score < 20
+      medal = @game.add.sprite(-65, 7, 'medals', 1)
+      medal.anchor.setTo 0.5, 0.5
+      @scoreboard.addChild medal
+    else if score >= 20
+      medal = @game.add.sprite(-65, 7, 'medals', 0)
+      medal.anchor.setTo 0.5, 0.5
+      @scoreboard.addChild medal
 
-  @bestScoreText.setText bestScore.toString()
+    if medal
+      emitter = @game.add.emitter(medal.x, medal.y, 400)
+      @scoreboard.addChild emitter
+      emitter.width = medal.width
+      emitter.height = medal.height
+      emitter.makeParticles 'particle'
+      emitter.setRotation -100, 100
+      emitter.setXSpeed 0, 0
+      emitter.setYSpeed 0, 0
+      emitter.minParticleScale = 0.25
+      emitter.maxParticleScale = 0.5
+      emitter.setAll 'body.allowGravity', false
+      emitter.start false, 1000, 1000
+    @game.add.tween(this).to { y: 0 }, 1000, Phaser.Easing.Bounce.Out, true
 
-  if score >= 10 and score < 20
-    medal = @game.add.sprite(-65, 7, 'medals', 1)
-    medal.anchor.setTo 0.5, 0.5
-    @scoreboard.addChild medal
-  else if score >= 20
-    medal = @game.add.sprite(-65, 7, 'medals', 0)
-    medal.anchor.setTo 0.5, 0.5
-    @scoreboard.addChild medal
-
-  if medal
-    emitter = @game.add.emitter(medal.x, medal.y, 400)
-    @scoreboard.addChild emitter
-    emitter.width = medal.width
-    emitter.height = medal.height
-    emitter.makeParticles 'particle'
-    emitter.setRotation -100, 100
-    emitter.setXSpeed 0, 0
-    emitter.setYSpeed 0, 0
-    emitter.minParticleScale = 0.25
-    emitter.maxParticleScale = 0.5
-    emitter.setAll 'body.allowGravity', false
-    emitter.start false, 1000, 1000
-  @game.add.tween(this).to { y: 0 }, 1000, Phaser.Easing.Bounce.Out, true
-
-Scoreboard::startClick = ->
-  @game.state.start 'play'
+  startClick: ->
+    @game.state.start 'play'
 
 module.exports = Scoreboard

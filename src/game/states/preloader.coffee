@@ -26,6 +26,7 @@ class Preloader
     @load.audio 'groundHit', 'assets/audio/ground-hit.wav'
 
     @load.spritesheet 'bird', 'assets/images/bird.png', 34, 24, 3
+    @load.spritesheet 'poop', 'assets/images/poop.png', 34, 34, 3
 
     @load.spritesheet 'pipe', 'assets/images/pipes.png', 54,320,2
     @load.spritesheet 'medals', 'assets/images/medals.png', 44, 46, 2

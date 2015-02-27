@@ -1,7 +1,7 @@
 'use strict'
 
 Bird = (game, x, y, frame) ->
-  Phaser.Sprite.call @, game, x, y, 'bird', frame
+  Phaser.Sprite.call @, game, x, y, 'poop', frame
   @anchor.setTo 0.5, 0.5
 
   @animations.add 'flap'
@@ -22,6 +22,9 @@ Bird::constructor = Bird
 Bird::update = ->
   if @angle < 90 && @alive
     @angle += 2.5
+
+  if @body.position.y < 0
+    @body.position.y = 0
 
 Bird::flap = ->
   if @alive
